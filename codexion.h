@@ -22,13 +22,13 @@ typedef enum e_scheduler
 
 typedef struct s_config
 {
-    int         n_of_coders;
-    long        t_to_bornout;
-    long        t_to_compile;
-    long        t_to_debug;
-    long        t_to_refactor;
-    long        dongle_coldown;
-    int         n_of_compiles_required;
+    int         number_of_coders;
+    long        time_to_burnout;
+    long        time_to_compile;
+    long        time_to_debug;
+    long        time_to_refactor;
+    int         number_of_compiles_required;
+    long        dongle_cooldown;
     t_scheduler scheduler;
 }   t_config;
 
