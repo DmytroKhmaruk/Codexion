@@ -6,7 +6,7 @@
 /*   By: dkhmaruk <dkhmaruk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 11:24:09 by dkhmaruk          #+#    #+#             */
-/*   Updated: 2026/09/18 13:02:51 by dkhmaruk         ###   ########.fr       */
+/*   Updated: 2026/09/18 16:56:25 by dkhmaruk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,16 @@ typedef struct  s_coder     t_coder;
 typedef struct  s_dongle    t_dongle;
 typedef struct  s_request   t_request;
 typedef struct  s_heap      t_heap;
+typedef struct  s_config    t_config;
 
 int     parse_args(int argc, char **argv, t_config *config);
 int     init_all(t_sim *sim, t_config *config);
 void    destroy_dongles(t_sim *sim);
 void    destroy_sim(t_sim *sim);
+long    get_time_ms(void);
+void    set_start_time(t_sim *sim);
+int     is_stopped(t_sim *sim);
+void    stop_sim(t_sim *sim)
 
 typedef enum e_scheduler
 {

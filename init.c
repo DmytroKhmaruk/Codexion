@@ -6,7 +6,7 @@
 /*   By: dkhmaruk <dkhmaruk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 11:24:18 by dkhmaruk          #+#    #+#             */
-/*   Updated: 2026/09/18 12:58:20 by dkhmaruk         ###   ########.fr       */
+/*   Updated: 2026/09/18 16:30:37 by dkhmaruk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int init_dongles(t_sim *sim)
         sim->dongles[i].id = i;
         sim->dongles[i].available = 1;
         sim->dongles[i].available_at = 0;
-        sim->dongles[i].waiting.capacity = NULL;
+        sim->dongles[i].waiting.items = NULL;
         sim->dongles[i].waiting.size = 0;
         sim->dongles[i].waiting.capacity = 0;
         if (pthread_mutex_init(&sim->dongles[i].mutex, NULL) != 0)
