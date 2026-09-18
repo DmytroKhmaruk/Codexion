@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dkhmaruk <dkhmaruk@student.42vienna.c      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/18 11:25:06 by dkhmaruk          #+#    #+#             */
+/*   Updated: 2026/09/18 11:25:11 by dkhmaruk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 #include <limits.h>
 
@@ -81,18 +93,4 @@ int    parse_args(int argc, char **argv, t_config *config)
     if (!parse_scheduler(argv[8], config))
         return (0);
     return (1);
-}
-
-
-int main(int argc, char **argv)
-{
-    t_config    config;
-
-    if (!parse_args(argc, argv, &config))
-    {
-        printf("Error: invalid arguments\n");
-        return(1);
-    }
-    printf("Arguments are valid\n");
-    return (0);
 }

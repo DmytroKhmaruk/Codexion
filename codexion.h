@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   codexion.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dkhmaruk <dkhmaruk@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/18 11:24:09 by dkhmaruk          #+#    #+#             */
+/*   Updated: 2026/09/18 13:02:51 by dkhmaruk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CODEXION_H
 #   define CODEXION_H
 
@@ -13,6 +25,11 @@ typedef struct  s_coder     t_coder;
 typedef struct  s_dongle    t_dongle;
 typedef struct  s_request   t_request;
 typedef struct  s_heap      t_heap;
+
+int     parse_args(int argc, char **argv, t_config *config);
+int     init_all(t_sim *sim, t_config *config);
+void    destroy_dongles(t_sim *sim);
+void    destroy_sim(t_sim *sim);
 
 typedef enum e_scheduler
 {
@@ -79,4 +96,5 @@ typedef struct s_sim
     pthread_mutex_t print_mutex;
     pthread_t       monitor;
 }   t_sim;
+
 #endif
