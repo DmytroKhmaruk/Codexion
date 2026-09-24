@@ -19,3 +19,16 @@ void    set_start_time(t_sim *sim)
         i++;
     }
 }
+
+void smart_sleep(long duration, t_sim *sim)
+{
+    long start;
+
+    start = get_time_ms();
+    while (!is_stopped(sim))
+    {
+        if (get_time_ms() - start >= duration)
+            break;
+        usleep(500);
+    }
+}
