@@ -34,7 +34,16 @@ void    destroy_sim(t_sim *sim);
 long    get_time_ms(void);
 void    set_start_time(t_sim *sim);
 int     is_stopped(t_sim *sim);
-void    stop_sim(t_sim *sim)
+void    stop_sim(t_sim *sim);
+void    print_status(t_coder *coder, char *message);
+void    smart_sleep(long duration, t_sim *sim);
+void    *coder_routine(void *arg);
+int     start_coders(t_sim *sim);
+void    join_coders(t_sim *sim);
+void    *monitor_routine(void *arg);
+void    report_burnout(t_coder *coder);
+int     start_simulation(t_sim *sim);
+void    wait_simulation(t_sim *sim);
 
 typedef enum e_scheduler
 {
