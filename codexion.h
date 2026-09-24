@@ -44,6 +44,7 @@ void    *monitor_routine(void *arg);
 void    report_burnout(t_coder *coder);
 int     start_simulation(t_sim *sim);
 void    wait_simulation(t_sim *sim);
+int     heap_push(t_heap *heap, t_request *request, t_sim *sim);
 
 typedef enum e_scheduler
 {
@@ -97,7 +98,9 @@ typedef struct s_coder
     int             compile_count;
     pthread_mutex_t state_mutex;
     struct s_sim    *sim;
-}   t_coder;
+    t_request       left_request;
+    t_request       right_request;
+} t_coder;
 
 typedef struct s_sim
 {

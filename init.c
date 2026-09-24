@@ -37,6 +37,7 @@ void cleanup_dongles(t_sim *sim, int count)
     {    
         pthread_cond_destroy(&sim->dongles[i].cond);
         pthread_mutex_destroy(&sim->dongles[i].mutex);
+        free(sim->dongles[i].waiting.items);
         i++;
     }
     free(sim->dongles);
@@ -58,17 +59,24 @@ int init_dongles(t_sim *sim)
         sim->dongles[i].id = i;
         sim->dongles[i].available = 1;
         sim->dongles[i].available_at = 0;
-        sim->dongles[i].waiting.items = NULL;
+        sim->dongles[i].waiting.items = malloc(sizeof(t_request *) * sim->config.number_of_coders);
+        if(!sim->dongles[i].waiting.items)
+        {
+            cleanup_dongles(sim, i);
+            return (0);
+        }
         sim->dongles[i].waiting.size = 0;
-        sim->dongles[i].waiting.capacity = 0;
+        sim->dongles[i].waiting.capacity = sim->config.number_of_coders;
         if (pthread_mutex_init(&sim->dongles[i].mutex, NULL) != 0)
         {
+            free(sim->dongles[i].waiting.items);
             cleanup_dongles(sim, i);
             return (0);
         }
         if (pthread_cond_init(&sim->dongles[i].cond, NULL) != 0)
         {
             pthread_mutex_destroy(&sim->dongles[i].mutex);
+            free(sim->dongles[i].waiting.items);
             cleanup_dongles(sim, i);
             return (0);
         }
@@ -109,6 +117,9 @@ int init_coders(t_sim *sim)
         sim->coders[i].sim = sim;
         sim->coders[i].left = &sim->dongles[i];
         sim->coders[i].right = &sim->dongles[(i + 1) % n];
+        sim->coders[i].left_request.coder = &sim->coders[i];
+        sim->coders[i].right_request.arrival_time = 0;
+        sim->coders[i].right_request.deadline = 0;
         if (pthread_mutex_init(&sim->coders[i].state_mutex, NULL) != 0)
         {
             cleanup_coders(sim, i);
