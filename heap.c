@@ -82,3 +82,10 @@ t_request   *heap_pop(t_heap *heap, t_sim *sim)
     }
     return (result);
 }
+
+t_request   *heap_peek(t_heap *heap)
+{
+    if (heap->size == 0)
+        return (NULL);
+    return (heap->items[0]);
+}

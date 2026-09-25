@@ -46,6 +46,7 @@ int         start_simulation(t_sim *sim);
 void        wait_simulation(t_sim *sim);
 int         heap_push(t_heap *heap, t_request *request, t_sim *sim);
 t_request   *heap_pop(t_heap *heap, t_sim *sim);
+t_request   *heap_peek(t_heap *heap);
 
 typedef enum e_scheduler
 {
