@@ -89,3 +89,53 @@ t_request   *heap_peek(t_heap *heap)
         return (NULL);
     return (heap->items[0]);
 }
+
+int heap_remove(t_heap *heap, t_request *request, t_sim *sim)
+{
+    int i;
+    int parent;
+    int left;
+    int right;
+    int best;
+
+    i = 0;
+    while (i < heap->size && heap->items[i] != request)
+        i++;
+    if (i == heap->size)
+        return (0);
+    heap->size--;
+    if (i == heap->size)
+        return (1);
+    heap->items[i] = heap->items[heap->size];
+    if (i > 0)
+    {
+        parent = (i - 1) / 2;
+        if (request_before(heap->items[i], heap->items[parent], sim))
+        {
+            while (i > 0)
+            {
+                parent = (i - 1) / 2;
+                if (!request_before(heap->items[i], heap->items[parent], sim))
+                    break;
+                swap_requests(&heap->items[i], &heap->items[parent]);
+                i = parent;
+            }
+            return (1);
+        }
+    }
+    while (1)
+    {
+        left = i * 2 + 1;
+        right = i * 2 + 2;
+        best = i;
+        if (left < heap->size && request_before(heap->items[left], heap->items[best], sim))
+            best = left;
+        if (right < heap->size && request_before(heap->items[left], heap->items[best], sim))
+            best = right;
+        if (best == i)
+            break;
+        swap_requests(&heap->items[i], &heap->items[best]);
+        i = best;
+    }
+    return (1);
+}

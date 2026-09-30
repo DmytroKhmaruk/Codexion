@@ -50,6 +50,8 @@ t_request   *heap_peek(t_heap *heap);
 void        release_dongle(t_dongle *dongle, long cooldown);
 void        ms_to_timespec(long ms, struct timespec *ts);
 int         request_dongles(t_coder *coder, t_dongle *dongle, t_request *request);
+int         heap_remove(t_heap *heap, t_request *request, t_sim *sim);
+void        wake_all_dongles(t_sim *sim);
 
 typedef enum e_scheduler
 {

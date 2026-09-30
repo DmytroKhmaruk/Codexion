@@ -27,6 +27,7 @@ int request_dongles(t_coder *coder, t_dongle *dongle, t_request *request)
             heap_pop(&dongle->waiting, coder->sim);
             dongle->available = 0;
             pthread_mutex_unlock(&dongle->mutex);
+            return (1);
         }
         if (heap_peek(&dongle->waiting) == request && dongle->available)
         {
@@ -36,6 +37,7 @@ int request_dongles(t_coder *coder, t_dongle *dongle, t_request *request)
         else
             pthread_cond_wait(&dongle->cond, &dongle->mutex);
     }
+    heap_remove(&dongle->waiting, request, coder->sim);
     pthread_mutex_unlock(&dongle->mutex);
     return (0);
 }
