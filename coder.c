@@ -1,19 +1,5 @@
 #include "codexion.h"
 
-void    *coder_routine(void *arg)
-{
-    t_coder *coder;
-
-    coder = (t_coder *)arg;
-    while (!is_stopped(coder->sim))
-    {
-        /* code */
-        break;
-    }
-    
-    return (NULL);
-}
-
 int start_coders(t_sim *sim)
 {
     int i;
@@ -47,4 +33,44 @@ void    join_coders(t_sim *sim)
         pthread_join(sim->coders[i].tread, NULL);
         i++;
     }
+}
+
+void    start_compile(t_coder *coder)
+{
+    pthread_mutex_lock(&coder->state_mutex);
+    coder->last_compile_start = get_time_ms();
+    pthread_mutex_unlock(&coder->state_mutex);
+}
+
+void    finish_compile(t_coder *coder)
+{
+    pthread_mutex_lock(&coder->state_mutex);
+    coder->compile_count++;
+    pthread_mutex_unlock(&coder->state_mutex);
+}
+
+void    *coder_routine(void *arg)
+{
+    t_coder *coder;
+
+    coder = (t_coder *)arg;
+    while (!is_stopped(coder->sim))
+    {
+        if (!take_two_dongles(coder))
+            break;
+        start_compile(coder);
+        print_status(coder, "is compiling");
+        smart_sleep(coder->sim->config.time_to_compile, coder->sim);
+        release_two_dongles(coder);
+        if (is_stopped(coder->sim))
+            break;
+        finish_compile(coder);
+        print_status(coder, "is debugging");
+        smart_sleep(coder->sim->config.time_to_debug, coder->sim);
+        if (is_stopped(coder->sim))
+            break;
+        print_status(coder, "is refactoring");
+        smart_sleep(coder->sim->config.time_to_refactor, coder->sim);
+    }
+    return (NULL);
 }

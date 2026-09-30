@@ -85,3 +85,13 @@ int take_two_dongles(t_coder *coder)
     print_status(coder, "has taken a dongle");
     return (1);
 }
+
+void    release_two_dongles(t_coder *coder)
+{
+    long cooldown;
+
+    cooldown = coder->sim->config.dongle_cooldown;
+    release_dongle(coder->left, cooldown);
+    if (coder->right != coder->left)
+        release_dongle(coder->left, cooldown);
+}

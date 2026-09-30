@@ -21,10 +21,28 @@ int has_burned_out(t_coder *coder)
     return (0);
 }
 
-void    *monitor_routine(void *arg)
+int all_compiles_done(t_sim *sim)
 {
-    t_sim   *sim;
-    int     i;
+    int i;
+    int count;
+
+    i = 0;
+    while (i < sim->config.number_of_coders)
+    {
+        pthread_mutex_lock(&sim->coders[i].state_mutex);
+        count = sim->coders[i].compile_count;
+        pthread_mutex_unlock(&sim->coders[i].state_mutex);
+        if(count < sim->config.number_of_compiles_required)
+            return (0);
+        i++;
+    }
+    return (1);
+}
+
+void *monitor_routine(void *arg)
+{
+    t_sim *sim;
+    int i;
 
     sim = (t_sim *)arg;
     while (!is_stopped(sim))
@@ -38,6 +56,11 @@ void    *monitor_routine(void *arg)
                 return (NULL);
             }
             i++;
+        }
+        if (all_compiles_done(sim))
+        {
+            stop_sim(sim);
+            return (NULL);
         }
         usleep(500);
     }
