@@ -51,3 +51,37 @@ void    release_dongle(t_dongle *dongle, long cooldown)
     pthread_mutex_unlock(&dongle->mutex);
 }
 
+int take_two_dongles(t_coder *coder)
+{
+    t_dongle    *first;
+    t_dongle    *second;
+    t_request   *first_request;
+    t_request   *second_request;
+
+    if (coder->left == coder->right)
+        return (0);
+    if (coder->left->id < coder->right->id)
+    {
+        first = coder->left;
+        second = coder->right;
+        first_request = &coder->left_request;
+        second_request = &coder->right_request;
+    }
+    else
+    {
+        first = coder->right;
+        second = coder->left;
+        first_request = &coder->right_request;
+        second_request = &coder->left_request;
+    }
+    if (!request_dongles(coder, first, first_request))
+        return (0);
+    print_status(coder, "has taken a dongle");
+    if (!request_dongles(coder, second, second_request))
+    {
+        release_dongle(first, coder->sim->config.dongle_cooldown);
+        return (0);
+    }
+    print_status(coder, "has taken a dongle");
+    return (1);
+}
