@@ -49,11 +49,28 @@ void    finish_compile(t_coder *coder)
     pthread_mutex_unlock(&coder->state_mutex);
 }
 
+
+void    one_coder_routine(t_coder *coder)
+{
+    if (request_dongles(coder, coder->left, &coder->left_request))
+    {
+        print_status(coder, "has taken a dongle");
+        while (!is_stopped(coder->sim))
+            usleep(500);
+        release_dongle(coder->left, coder->sim->config.dongle_cooldown);
+    }
+}
+
 void    *coder_routine(void *arg)
 {
     t_coder *coder;
 
     coder = (t_coder *)arg;
+    if (coder->sim->config.number_of_coders == 1)
+    {
+        one_coder_routine(coder);
+        return (NULL);
+    }
     while (!is_stopped(coder->sim))
     {
         if (!take_two_dongles(coder))

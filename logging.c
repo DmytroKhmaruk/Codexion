@@ -16,11 +16,13 @@ void    report_burnout(t_coder *coder)
 {
     t_sim   *sim;
     long    time;
+    int     was_running;
 
     sim = coder->sim;
     pthread_mutex_lock(&sim->print_mutex);
     pthread_mutex_lock(&sim->stop_mutex);
-    if (!sim->stopped)
+    was_running = !sim->stopped;
+    if (was_running)
     {
         sim->stopped = 1;
         time = get_time_ms() - sim->start_time;
@@ -29,4 +31,6 @@ void    report_burnout(t_coder *coder)
 
     pthread_mutex_unlock(&sim->stop_mutex);
     pthread_mutex_unlock(&sim->print_mutex);
+    if (was_running)
+        wake_all_dongles(sim);
 }

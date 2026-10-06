@@ -14,7 +14,9 @@ int has_burned_out(t_coder *coder)
     long    last;
     long    now;
 
-    last = get_last_compile(coder);
+    pthread_mutex_lock(&coder->state_mutex);
+    last = coder->last_compile_start;
+    pthread_mutex_unlock(&coder->state_mutex);
     now = get_time_ms();
     if (now - last >= coder->sim->config.time_to_burnout)
         return (1);
@@ -41,12 +43,17 @@ int all_compiles_done(t_sim *sim)
 
 void *monitor_routine(void *arg)
 {
-    t_sim *sim;
-    int i;
+    t_sim   *sim;
+    int     i;
 
     sim = (t_sim *)arg;
     while (!is_stopped(sim))
     {
+        if (all_compiles_done(sim))
+        {
+            stop_sim(sim);
+            return (NULL);
+        }
         i = 0;
         while (i < sim->config.number_of_coders)
         {
@@ -56,11 +63,6 @@ void *monitor_routine(void *arg)
                 return (NULL);
             }
             i++;
-        }
-        if (all_compiles_done(sim))
-        {
-            stop_sim(sim);
-            return (NULL);
         }
         usleep(500);
     }
