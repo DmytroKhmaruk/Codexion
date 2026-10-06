@@ -1,6 +1,6 @@
 #include "codexion.h"
 
-int request_dongles(t_coder *coder, t_dongle *dongle, t_request *request)
+int request_dongle(t_coder *coder, t_dongle *dongle, t_request *request)
 {
     long    last_compile;
     struct  timespec timeout;
@@ -74,10 +74,10 @@ int take_two_dongles(t_coder *coder)
         first_request = &coder->right_request;
         second_request = &coder->left_request;
     }
-    if (!request_dongles(coder, first, first_request))
+    if (!request_dongle(coder, first, first_request))
         return (0);
     print_status(coder, "has taken a dongle");
-    if (!request_dongles(coder, second, second_request))
+    if (!request_dongle(coder, second, second_request))
     {
         release_dongle(first, coder->sim->config.dongle_cooldown);
         return (0);
@@ -93,5 +93,5 @@ void    release_two_dongles(t_coder *coder)
     cooldown = coder->sim->config.dongle_cooldown;
     release_dongle(coder->left, cooldown);
     if (coder->right != coder->left)
-        release_dongle(coder->left, cooldown);
+        release_dongle(coder->right, cooldown);
 }

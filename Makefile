@@ -10,13 +10,13 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = codexion.a
+NAME = codexion
 
 CC = cc	
-CFLAGS = -Wall -Wextra -Werror -MMD 
+CFLAGS = -Wall -Wextra -Werror -MMD -MP
 
-SRC = parsing.c init.c cleanup.c\
-
+SRC = parsing.c init.c cleanup.c coder.c dongle.c heap.c\
+ 	logging.c monitor.c simulation.c time.c utils.c main.c\
 
 OBJ_DIR = obj
 
@@ -26,7 +26,7 @@ DEP = $(OBJ:.o=.d)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	ar rcs $(NAME) $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) -o $(NAME) -pthread
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)

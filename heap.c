@@ -130,7 +130,7 @@ int heap_remove(t_heap *heap, t_request *request, t_sim *sim)
         best = i;
         if (left < heap->size && request_before(heap->items[left], heap->items[best], sim))
             best = left;
-        if (right < heap->size && request_before(heap->items[left], heap->items[best], sim))
+        if (right < heap->size && request_before(heap->items[right], heap->items[best], sim))
             best = right;
         if (best == i)
             break;

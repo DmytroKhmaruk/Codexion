@@ -52,13 +52,33 @@ void    finish_compile(t_coder *coder)
 
 void    one_coder_routine(t_coder *coder)
 {
-    if (request_dongles(coder, coder->left, &coder->left_request))
+    if (request_dongle(coder, coder->left, &coder->left_request))
     {
         print_status(coder, "has taken a dongle");
         while (!is_stopped(coder->sim))
             usleep(500);
         release_dongle(coder->left, coder->sim->config.dongle_cooldown);
     }
+}
+
+int coder_cycle(t_coder *coder)
+{
+    if (!take_two_dongles(coder))
+        return (0);
+    start_compile(coder);
+    print_status(coder, "is compiling");
+    smart_sleep(coder->sim->config.time_to_compile, coder->sim);
+    release_two_dongles(coder);
+    if (is_stopped(coder->sim))
+        return (0);
+    finish_compile(coder);
+    print_status(coder, "is debugging");
+    smart_sleep(coder->sim->config.time_to_debug, coder->sim);
+    if (is_stopped(coder->sim))
+        return (0);
+    print_status(coder, "is refactoring");
+    smart_sleep(coder->sim->config.time_to_refactor, coder->sim);
+    return (1);
 }
 
 void    *coder_routine(void *arg)
@@ -73,21 +93,8 @@ void    *coder_routine(void *arg)
     }
     while (!is_stopped(coder->sim))
     {
-        if (!take_two_dongles(coder))
+        if(!coder_cycle(coder))
             break;
-        start_compile(coder);
-        print_status(coder, "is compiling");
-        smart_sleep(coder->sim->config.time_to_compile, coder->sim);
-        release_two_dongles(coder);
-        if (is_stopped(coder->sim))
-            break;
-        finish_compile(coder);
-        print_status(coder, "is debugging");
-        smart_sleep(coder->sim->config.time_to_debug, coder->sim);
-        if (is_stopped(coder->sim))
-            break;
-        print_status(coder, "is refactoring");
-        smart_sleep(coder->sim->config.time_to_refactor, coder->sim);
     }
     return (NULL);
 }
