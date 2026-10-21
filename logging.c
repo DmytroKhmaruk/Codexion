@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   logging.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dkhmaruk <dkhmaruk@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/10/21 16:07:30 by dkhmaruk          #+#    #+#             */
+/*   Updated: 2026/10/21 16:41:27 by dkhmaruk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
 void    print_status(t_coder *coder, char *message)
@@ -16,21 +28,15 @@ void    report_burnout(t_coder *coder)
 {
     t_sim   *sim;
     long    time;
-    int     was_running;
 
     sim = coder->sim;
     pthread_mutex_lock(&sim->print_mutex);
     pthread_mutex_lock(&sim->stop_mutex);
-    was_running = !sim->stopped;
-    if (was_running)
-    {
-        sim->stopped = 1;
-        time = get_time_ms() - sim->start_time;
-        printf("%ld %d burned out\n", time, coder->id);
-    }
+    sim->stopped = 1;
+    time = get_time_ms() - sim->start_time;
+    printf("%ld %d burned out\n", time, coder->id);
 
     pthread_mutex_unlock(&sim->stop_mutex);
     pthread_mutex_unlock(&sim->print_mutex);
-    if (was_running)
-        wake_all_dongles(sim);
+    wake_all_dongles(sim);
 }

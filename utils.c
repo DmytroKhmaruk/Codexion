@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dkhmaruk <dkhmaruk@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/10/21 16:08:50 by dkhmaruk          #+#    #+#             */
+/*   Updated: 2026/10/21 16:42:16 by dkhmaruk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
 int is_stopped(t_sim *sim)
@@ -12,13 +24,9 @@ int is_stopped(t_sim *sim)
 
 void    stop_sim(t_sim *sim)
 {
-    int was_running;
-
     pthread_mutex_lock(&sim->stop_mutex);
-    was_running = !sim->stopped;
     sim->stopped = 1;
     pthread_mutex_unlock(&sim->stop_mutex);
-    if (was_running)
     wake_all_dongles(sim);
 }
 
