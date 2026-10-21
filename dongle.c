@@ -51,39 +51,114 @@ void    release_dongle(t_dongle *dongle, long cooldown)
     pthread_mutex_unlock(&dongle->mutex);
 }
 
-int take_two_dongles(t_coder *coder)
+static void	lock_all_dongles(t_sim *sim)
 {
-    t_dongle    *first;
-    t_dongle    *second;
-    t_request   *first_request;
-    t_request   *second_request;
+	int	i;
 
-    if (coder->left == coder->right)
-        return (0);
-    if (coder->left->id < coder->right->id)
-    {
-        first = coder->left;
-        second = coder->right;
-        first_request = &coder->left_request;
-        second_request = &coder->right_request;
-    }
-    else
-    {
-        first = coder->right;
-        second = coder->left;
-        first_request = &coder->right_request;
-        second_request = &coder->left_request;
-    }
-    if (!request_dongle(coder, first, first_request))
-        return (0);
-    print_status(coder, "has taken a dongle");
-    if (!request_dongle(coder, second, second_request))
-    {
-        release_dongle(first, coder->sim->config.dongle_cooldown);
-        return (0);
-    }
-    print_status(coder, "has taken a dongle");
-    return (1);
+	i = 0;
+	while (i < sim->config.number_of_coders)
+	{
+		pthread_mutex_lock(&sim->dongles[i].mutex);
+		i++;
+	}
+}
+
+static void	unlock_all_dongles(t_sim *sim)
+{
+	int	i;
+
+	i = sim->config.number_of_coders;
+	while (i > 0)
+	{
+		i--;
+		pthread_mutex_unlock(&sim->dongles[i].mutex);
+	}
+}
+
+static void	remove_pair_requests(t_coder *coder)
+{
+	heap_remove(&coder->left->waiting,
+		&coder->left_request, coder->sim);
+	heap_remove(&coder->right->waiting,
+		&coder->right_request, coder->sim);
+}
+
+static void	prepare_pair_requests(t_coder *coder)
+{
+	long	now;
+	long	last;
+
+	pthread_mutex_lock(&coder->state_mutex);
+	last = coder->last_compile_start;
+	pthread_mutex_unlock(&coder->state_mutex);
+	now = get_time_ms();
+	coder->left_request.coder = coder;
+	coder->left_request.arrival_time = now;
+	coder->left_request.deadline = last
+		+ coder->sim->config.time_to_burnout;
+	coder->right_request.coder = coder;
+	coder->right_request.arrival_time = now;
+	coder->right_request.deadline
+		= coder->left_request.deadline;
+}
+
+static int	push_pair_requests(t_coder *coder)
+{
+	if (!heap_push(&coder->left->waiting,
+			&coder->left_request, coder->sim))
+		return (0);
+	if (!heap_push(&coder->right->waiting,
+			&coder->right_request, coder->sim))
+	{
+		heap_remove(&coder->left->waiting,
+			&coder->left_request, coder->sim);
+		return (0);
+	}
+	return (1);
+}
+
+int	take_two_dongles(t_coder *coder)
+{
+	t_request	*best_left;
+	t_request	*best_right;
+	long		now;
+
+	if (coder->left == coder->right)
+		return (0);
+	prepare_pair_requests(coder);
+	lock_all_dongles(coder->sim);
+	if (!push_pair_requests(coder))
+	{
+		unlock_all_dongles(coder->sim);
+		return (0);
+	}
+	unlock_all_dongles(coder->sim);
+	while (!is_stopped(coder->sim))
+	{
+		lock_all_dongles(coder->sim);
+		now = get_time_ms();
+		best_left = heap_best_runnable(&coder->left->waiting,
+				coder->sim, now);
+		best_right = heap_best_runnable(&coder->right->waiting,
+				coder->sim, now);
+		if (best_left == &coder->left_request
+			&& best_right == &coder->right_request)
+		{
+			remove_pair_requests(coder);
+			coder->left->available = 0;
+			coder->right->available = 0;
+			unlock_all_dongles(coder->sim);
+			print_status(coder, "has taken a dongle");
+			print_status(coder, "has taken a dongle");
+			return (1);
+		}
+		unlock_all_dongles(coder->sim);
+		usleep(500);
+	}
+	lock_all_dongles(coder->sim);
+	remove_pair_requests(coder);
+	unlock_all_dongles(coder->sim);
+	return (0);
 }
 
 void    release_two_dongles(t_coder *coder)

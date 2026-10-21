@@ -9,7 +9,7 @@ long get_last_compile(t_coder *coder)
     return (last);
 }
 
-int has_burned_out(t_coder *coder)
+static int has_burned_out(t_coder *coder)
 {
     long    last;
     long    now;
@@ -18,7 +18,7 @@ int has_burned_out(t_coder *coder)
     last = coder->last_compile_start;
     pthread_mutex_unlock(&coder->state_mutex);
     now = get_time_ms();
-    if (now - last >= coder->sim->config.time_to_burnout)
+    if (now - last > coder->sim->config.time_to_burnout)
         return (1);
     return (0);
 }

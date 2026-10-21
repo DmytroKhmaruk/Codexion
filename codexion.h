@@ -6,7 +6,7 @@
 /*   By: dkhmaruk <dkhmaruk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 11:24:09 by dkhmaruk          #+#    #+#             */
-/*   Updated: 2026/09/18 16:56:25 by dkhmaruk         ###   ########.fr       */
+/*   Updated: 2026/10/21 15:43:36 by dkhmaruk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int         heap_remove(t_heap *heap, t_request *request, t_sim *sim);
 void        wake_all_dongles(t_sim *sim);
 int         take_two_dongles(t_coder *coder);
 void        release_two_dongles(t_coder *coder);
+t_request	*heap_best_runnable(t_heap *heap, t_sim *sim, long now);
 
 typedef enum e_scheduler
 {
