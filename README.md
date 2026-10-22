@@ -160,24 +160,35 @@ The comparison logic changes depending on whether the selected scheduler is FIFO
 
 ### Deadlock prevention
 
-A coder needs two dongles simultaneously to compile.
+A coder requires two dongles before compilation can begin.
 
-To avoid circular wait, dongles are acquired in a deterministic order based on their IDs. The dongle with the lower ID is requested first and the one with the higher ID second.
+Requests for both required dongles are registered before either
+dongle is reserved. A coder receives the pair only when both
+required dongles are available and their cooldown periods have
+expired.
 
-This prevents a circular dependency where every coder holds one dongle while waiting permanently for another one.
+Both dongles are then reserved together.
 
+This prevents a coder from holding one dongle while waiting for
+another, eliminating the circular hold-and-wait situation that
+could otherwise lead to deadlock.
 ### Starvation prevention
 
-Every dongle maintains a priority queue of waiting requests.
+Each dongle maintains a priority queue of waiting requests.
 
-Access is not granted simply to whichever thread reaches the mutex first. Instead, the next coder is selected according to the configured scheduler:
+The scheduler considers requests whose coder can currently acquire
+both required dongles.
+
+Among runnable requests, priority is determined by the configured
+scheduler:
 
 ```text
 FIFO -> earliest request
 EDF  -> earliest burnout deadline
 ```
 
-This provides deterministic arbitration of competing requests.
+This prevents an unavailable pair from unnecessarily blocking other
+coders that can currently make progress.
 
 ### Dongle cooldown
 
@@ -208,7 +219,7 @@ A dedicated monitor thread periodically checks every coder.
 The burnout condition is based on:
 
 ```text
-current_time - last_compile_start >= time_to_burnout
+current_time - last_compile_start > time_to_burnout
 ```
 
 `last_compile_start` is protected by the coder's state mutex.
@@ -343,16 +354,30 @@ The project is divided into several modules:
 ```text
 main.c
 parsing.c
+
 init.c
+init_utils.c
+init_cleanup.c
 cleanup.c
+
 coder.c
+coder_utils.c
+
 dongle.c
+dongle_pair.c
+dongle_pair_utils.c
+dongle_release.c
+
 heap.c
+heap_utils.c
+heap_runnable.c
+
 monitor.c
 logging.c
 simulation.c
 time.c
 utils.c
+
 codexion.h
 Makefile
 README.md
@@ -361,17 +386,31 @@ README.md
 Main responsibilities:
 
 ```text
-parsing.c     argument validation and configuration
-init.c        initialization of simulation structures
-cleanup.c     destruction and memory cleanup
-coder.c       coder thread behaviour
-dongle.c      dongle acquisition and release
-heap.c        FIFO/EDF priority queue
-monitor.c     burnout and completion monitoring
-logging.c     synchronized output
-simulation.c  simulation startup and thread coordination
-time.c        time utilities and controlled sleeping
-utils.c       shared helper functions
+parsing.c            argument validation and configuration
+
+init.c               main initialization flow
+init_utils.c         initialization helpers
+init_cleanup.c       partial initialization cleanup
+
+cleanup.c            final destruction and memory cleanup
+
+coder.c              coder thread behaviour
+coder_utils.c        coder-related helper functions
+
+dongle.c             single-dongle request logic
+dongle_pair.c        atomic two-dongle acquisition
+dongle_pair_utils.c  pair-request helpers
+dongle_release.c     dongle release and cooldown handling
+
+heap.c               main priority-queue operations
+heap_utils.c         heap maintenance helpers
+heap_runnable.c      runnable-request selection
+
+monitor.c            burnout and completion monitoring
+logging.c            synchronized output
+simulation.c         simulation startup and thread coordination
+time.c               time utilities and controlled sleeping
+utils.c              shared helper functions
 ```
 
 ## Resources
