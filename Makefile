@@ -6,7 +6,7 @@
 #    By: dkhmaruk <dkhmaruk@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/18 11:24:41 by dkhmaruk          #+#    #+#              #
-#    Updated: 2026/10/22 12:29:03 by dkhmaruk         ###   ########.fr        #
+#    Updated: 2026/10/22 14:17:14 by dkhmaruk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,6 @@ SRC = parsing.c init.c cleanup.c coder.c dongle.c heap.c\
 OBJ_DIR = obj
 
 OBJ = $(SRC:%.c=$(OBJ_DIR)/%.o)
-DEP = $(OBJ:.o=.d)
 
 all: $(NAME)
 
@@ -46,4 +45,3 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
--include $(DEP)
