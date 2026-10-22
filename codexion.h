@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       :::      ::::::::    */
-/*   codexion.h                                        :+:      :+:    :+:    */
+/*   codexion.h                                         :+:      :+:    :+:   */
 /*                                                   +:+ +:+         +:+      */
 /*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/09/18 11:24:09 by username         #+#    #+#              */
-/*   Updated: 2026/10/22 12:14:06 by username        ###   ########.fr        */
+/*   Updated: 2026/10/22 12:46:00 by dkhmaruk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@ typedef struct s_request	t_request;
 typedef struct s_heap		t_heap;
 typedef struct s_config		t_config;
 
+int			init_one_dongle(t_sim *sim, int i);
+int			init_one_coder(t_sim *sim, int i);
+void		cleanup_dongles(t_sim *sim, int count);
+void		cleanup_coders(t_sim *sim, int count);
+void		cleanup_sim_mutexes(t_sim *sim);
 int			request_before(t_request *a, t_request *b, t_sim *sim);
 void		swap_requests(t_request **a, t_request **b);
 int			heap_find(t_heap *heap, t_request *request);
@@ -58,7 +63,8 @@ t_request	*heap_pop(t_heap *heap, t_sim *sim);
 t_request	*heap_peek(t_heap *heap);
 void		release_dongle(t_dongle *dongle, long cooldown);
 void		ms_to_timespec(long ms, struct timespec *ts);
-int			request_dongle(t_coder *coder, t_dongle *dongle, t_request *request);
+int			request_dongle(t_coder *coder, t_dongle *dongle,
+				t_request *request);
 int			heap_remove(t_heap *heap, t_request *request, t_sim *sim);
 void		wake_all_dongles(t_sim *sim);
 int			take_two_dongles(t_coder *coder);

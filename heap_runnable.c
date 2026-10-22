@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       :::      ::::::::    */
-/*   heap_runnable.c                                   :+:      :+:    :+:    */
+/*   heap_runnable.c                                    :+:      :+:    :+:   */
 /*                                                   +:+ +:+         +:+      */
 /*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/10/22 12:04:33 by username         #+#    #+#              */
-/*   Updated: 2026/10/22 12:04:33 by username        ###   ########.fr        */
+/*   Updated: 2026/10/22 12:58:39 by dkhmaruk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,18 @@ t_request	*heap_best_runnable(t_heap *heap, t_sim *sim, long now)
 	while (i < heap->size)
 	{
 		if (coder_is_runnable(heap->items[i]->coder, now)
-				&& (!best || request_before(heap->items[i],
-				best, sim)))
-		best = heap->items[i];
+			&& (!best || request_before(heap->items[i], best, sim)))
+			best = heap->items[i];
 		i++;
 	}
+	return (best);
+}
+
+int	heap_best_child(t_heap *heap, int child,
+	int best, t_sim *sim)
+{
+	if (child < heap->size && request_before(heap->items[child],
+			heap->items[best], sim))
+		return (child);
 	return (best);
 }

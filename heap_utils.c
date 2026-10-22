@@ -6,7 +6,7 @@
 /*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/10/22 12:04:53 by username         #+#    #+#              */
-/*   Updated: 2026/10/22 12:07:15 by username        ###   ########.fr        */
+/*   Updated: 2026/10/22 12:55:44 by username        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,8 @@ void	heap_sift_up(t_heap *heap, int i, t_sim *sim)
 	while (i > 0)
 	{
 		parent = (i - 1) / 2;
-		if (!request_before(heap->items[i],
-					heap->items[parent], sim))
-		break ;
+		if (!request_before(heap->items[i], heap->items[parent], sim))
+			break ;
 		swap_requests(&heap->items[i],
 			&heap->items[parent]);
 		i = parent;
@@ -79,14 +78,4 @@ void	heap_sift_down(t_heap *heap, int i, t_sim *sim)
 		swap_requests(&heap->items[i], &heap->items[best]);
 		i = best;
 	}
-}
-
-int heap_best_child(t_heap * heap, int child,
-	int	best, t_sim *sim)
-{
-	if (child < heap->size
-			&& request_before(heap->items[child],
-		heap->items[best], sim))
-	return (child);
-	return (best);
 }

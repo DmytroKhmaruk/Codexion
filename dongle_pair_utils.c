@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       :::      ::::::::    */
-/*   dongle_pair_utils.c                               :+:      :+:    :+:    */
+/*   dongle_pair_utils.c                                :+:      :+:    :+:   */
 /*                                                   +:+ +:+         +:+      */
 /*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/10/22 11:36:30 by username         #+#    #+#              */
-/*   Updated: 2026/10/22 11:38:42 by username        ###   ########.fr        */
+/*   Updated: 2026/10/22 12:51:20 by dkhmaruk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,7 @@ void	prepare_pair_requests(t_coder *coder)
 	now = get_time_ms();
 	coder->left_request.coder = coder;
 	coder->left_request.arrival_time = now;
-	coder->left_request.deadline = last
-	+coder->sim->config.time_to_burnout;
+	coder->left_request.deadline = last + coder->sim->config.time_to_burnout;
 	coder->right_request.coder = coder;
 	coder->right_request.arrival_time = now;
 	coder->right_request.deadline = coder->left_request.deadline;
@@ -32,14 +31,11 @@ void	prepare_pair_requests(t_coder *coder)
 
 int	push_pair_requests(t_coder *coder)
 {
-	if (!heap_push(&coder->left->waiting,
-				&coder->left_request, coder->sim))
-	return (0);
-	if (!heap_push(&coder->right->waiting,
-				&coder->right_request, coder->sim))
+	if (!heap_push(&coder->left->waiting, & coder->left_request, coder->sim))
+		return (0);
+	if (!heap_push(&coder->right->waiting, & coder->right_request, coder->sim))
 	{
-		heap_remove(&coder->left->waiting,
-			&coder->left_request, coder->sim);
+		heap_remove(&coder->left->waiting, & coder->left_request, coder->sim);
 		return (0);
 	}
 	return (1);

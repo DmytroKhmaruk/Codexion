@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       :::      ::::::::    */
-/*   dongle_pair.c                                     :+:      :+:    :+:    */
+/*   dongle_pair.c                                      :+:      :+:    :+:   */
 /*                                                   +:+ +:+         +:+      */
 /*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/10/22 11:38:53 by username         #+#    #+#              */
-/*   Updated: 2026/10/22 11:38:53 by username        ###   ########.fr        */
+/*   Updated: 2026/10/22 12:49:57 by dkhmaruk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,8 @@ static int	pair_is_best(t_coder *coder)
 	long		now;
 
 	now = get_time_ms();
-	best_left = heap_best_runnable(&coder->left->waiting,
-		coder->sim, now);
-	best_right = heap_best_runnable(&coder->right->waiting,
-		coder->sim, now);
+	best_left = heap_best_runnable(&coder->left->waiting, coder->sim, now);
+	best_right = heap_best_runnable(&coder->right->waiting, coder->sim, now);
 	if (best_left != &coder->left_request)
 		return (0);
 	if (best_right != &coder->right_request)
@@ -71,10 +69,7 @@ int	take_two_dongles(t_coder *coder)
 	prepare_pair_requests(coder);
 	lock_all_dongles(coder->sim);
 	if (!push_pair_requests(coder))
-	{
-		unlock_all_dongles(coder->sim);
-		return (0);
-	}
+		return (unlock_all_dongles(coder->sim), 0);
 	unlock_all_dongles(coder->sim);
 	while (!is_stopped(coder->sim))
 	{
