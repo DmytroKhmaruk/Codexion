@@ -6,7 +6,7 @@
 /*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/09/18 11:25:06 by username         #+#    #+#              */
-/*   Updated: 2026/10/22 11:13:03 by username        ###   ########.fr        */
+/*   Updated: 2026/10/22 11:45:49 by username        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	parse_args(int argc, char **argv, t_config *config)
 		return (0);
 	if (!get_number(argv[5], &config->time_to_refactor))
 		return (0);
-	if (!get_number(argv[6], &value) || value > INT_MAX)
+	if (!get_number(argv[6], &value) || value == 0 || value > INT_MAX)
 		return (0);
 	config->number_of_compiles_required = (int) value;
 	if (!get_number(argv[7], &config->dongle_cooldown))

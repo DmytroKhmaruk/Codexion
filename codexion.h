@@ -6,7 +6,7 @@
 /*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/09/18 11:24:09 by username         #+#    #+#              */
-/*   Updated: 2026/10/22 11:18:33 by username        ###   ########.fr        */
+/*   Updated: 2026/10/22 11:39:10 by username        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,9 @@ void		wake_all_dongles(t_sim *sim);
 int			take_two_dongles(t_coder *coder);
 void		release_two_dongles(t_coder *coder);
 t_request	*heap_best_runnable(t_heap *heap, t_sim *sim, long now);
+void		prepare_pair_requests(t_coder *coder);
+int			push_pair_requests(t_coder *coder);
+void		remove_pair_requests(t_coder *coder);
 
 typedef enum e_scheduler
 {

@@ -6,7 +6,7 @@
 #    By: dkhmaruk <dkhmaruk@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/18 11:24:41 by dkhmaruk          #+#    #+#              #
-#    Updated: 2026/10/22 11:20:08 by dkhmaruk         ###   ########.fr        #
+#    Updated: 2026/10/22 11:39:59 by dkhmaruk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,8 @@ CFLAGS = -Wall -Wextra -Werror -pthread
 
 SRC = parsing.c init.c cleanup.c coder.c dongle.c heap.c\
  	logging.c monitor.c simulation.c time.c utils.c main.c\
-	coder_utils.c\
+	coder_utils.c dongle_pair.c dongle_pair_utils.c\
+	dongle_release.c
 
 OBJ_DIR = obj
 
