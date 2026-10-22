@@ -1,33 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   simulation.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: dkhmaruk <dkhmaruk@student.42vienna.c      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/21 16:08:30 by dkhmaruk          #+#    #+#             */
-/*   Updated: 2026/10/21 16:08:33 by dkhmaruk         ###   ########.fr       */
+/*                                                       :::      ::::::::    */
+/*   simulation.c                                      :+:      :+:    :+:    */
+/*                                                   +:+ +:+         +:+      */
+/*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
+/*                                               +#+#+#+#+#+   +#+            */
+/*   Created: 2026/10/21 16:08:30 by username         #+#    #+#              */
+/*   Updated: 2026/10/22 11:13:12 by username        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-int start_simulation(t_sim *sim)
+int	start_simulation(t_sim *sim)
 {
-    set_start_time(sim);
-    if (!start_coders(sim))
-        return (0);
-    if (pthread_create(&sim->monitor, NULL, monitor_routine, sim) != 0)
-    {
-        stop_sim(sim);
-        join_coders(sim);
-        return (0);
-    }
-    return (1);
+	set_start_time(sim);
+	if (!start_coders(sim))
+		return (0);
+	if (pthread_create(&sim->monitor, NULL, monitor_routine, sim) != 0)
+	{
+		stop_sim(sim);
+		join_coders(sim);
+		return (0);
+	}
+	return (1);
 }
 
-void    wait_simulation(t_sim *sim)
+void	wait_simulation(t_sim *sim)
 {
-    pthread_join(sim->monitor, NULL);
-    join_coders(sim);
+	pthread_join(sim->monitor, NULL);
+	join_coders(sim);
 }

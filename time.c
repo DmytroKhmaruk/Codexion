@@ -1,52 +1,53 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   time.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: dkhmaruk <dkhmaruk@student.42vienna.c      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/21 16:08:43 by dkhmaruk          #+#    #+#             */
-/*   Updated: 2026/10/21 16:08:45 by dkhmaruk         ###   ########.fr       */
+/*                                                       :::      ::::::::    */
+/*   time.c                                            :+:      :+:    :+:    */
+/*                                                   +:+ +:+         +:+      */
+/*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
+/*                                               +#+#+#+#+#+   +#+            */
+/*   Created: 2026/10/21 16:08:43 by username         #+#    #+#              */
+/*   Updated: 2026/10/22 11:13:19 by username        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-long    get_time_ms(void)
+long	get_time_ms(void)
 {
-    struct timeval  tv;
-    gettimeofday(&tv, NULL);
-    return (tv.tv_sec * 1000L + tv.tv_usec / 1000L);
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000L + tv.tv_usec / 1000L);
 }
 
-void    set_start_time(t_sim *sim)
+void	set_start_time(t_sim *sim)
 {
-    int i;
+	int	i;
 
-    sim->start_time = get_time_ms();
-    i = 0;
-    while (i < sim->config.number_of_coders)
-    {
-        sim->coders[i].last_compile_start = sim->start_time;
-        i++;
-    }
+	sim->start_time = get_time_ms();
+	i = 0;
+	while (i < sim->config.number_of_coders)
+	{
+		sim->coders[i].last_compile_start = sim->start_time;
+		i++;
+	}
 }
 
-void smart_sleep(long duration, t_sim *sim)
+void	smart_sleep(long duration, t_sim *sim)
 {
-    long start;
+	long	start;
 
-    start = get_time_ms();
-    while (!is_stopped(sim))
-    {
-        if (get_time_ms() - start >= duration)
-            break;
-        usleep(500);
-    }
+	start = get_time_ms();
+	while (!is_stopped(sim))
+	{
+		if (get_time_ms() - start >= duration)
+			break ;
+		usleep(500);
+	}
 }
 
-void    ms_to_timespec(long ms, struct timespec *ts)
+void	ms_to_timespec(long ms, struct timespec *ts)
 {
-    ts->tv_sec = ms / 1000;
-    ts->tv_nsec = (ms % 1000) * 1000000L;
+	ts->tv_sec = ms / 1000;
+	ts->tv_nsec = (ms % 1000) * 1000000L;
 }
