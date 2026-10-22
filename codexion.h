@@ -6,7 +6,7 @@
 /*   By: username <username@student.42tokyo.jp>    #+#  +:+       +#+         */
 /*                                               +#+#+#+#+#+   +#+            */
 /*   Created: 2026/09/18 11:24:09 by username         #+#    #+#              */
-/*   Updated: 2026/10/22 11:39:10 by username        ###   ########.fr        */
+/*   Updated: 2026/10/22 12:14:06 by username        ###   ########.fr        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,13 @@ typedef struct s_request	t_request;
 typedef struct s_heap		t_heap;
 typedef struct s_config		t_config;
 
+int			request_before(t_request *a, t_request *b, t_sim *sim);
+void		swap_requests(t_request **a, t_request **b);
+int			heap_find(t_heap *heap, t_request *request);
+int			heap_should_sift_up(t_heap *heap, int i, t_sim *sim);
+void		heap_sift_up(t_heap *heap, int i, t_sim *sim);
+void		heap_sift_down(t_heap *heap, int i, t_sim *sim);
+int			heap_best_child(t_heap *heap, int child, int best, t_sim *sim);
 int			coder_cycle(t_coder *coder);
 void		one_coder_routine(t_coder *coder);
 int			parse_args(int argc, char **argv, t_config *config);
