@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dkhmaruk <dkhmaruk@student.42.fr>          +#+  +:+       +#+         #
+#    By: dkhmaruk <dkhmaruk@student.42vienna.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/18 11:24:41 by dkhmaruk          #+#    #+#              #
-#    Updated: 2026/10/22 14:17:14 by dkhmaruk         ###   ########.fr        #
+#    Updated: 2026/10/27 10:20:48 by dkhmaruk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
